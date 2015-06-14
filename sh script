@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#Phone
+phone_here="https://graph.api.smartthings.com/api/smartapps/installations/..../iPhone/here?access_token=..."
+phone_away="https://graph.api.smartthings.com/api/smartapps/installations/..../iPhone/away?access_token=..."
+
+# add ip / hostname separated by while space
+myHost="xxx.xxx.xxx.xxx"
+
+HERE=0
+curl $phone_away
+
+if [ -f /home/pi/Desktop/monitor/phone_status.dat ]; then
+  # echo "File exists"
+  sleep 1
+else
+  echo "Created at $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
+fi
+
+while true; do
+
+# no ping request
+COUNT=1
+WAIT=1
+i=0
+
+echo "Start time: $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
+while [ $i -lt 300 ]; do
+  count=$(ping -c $COUNT -w $WAIT $myHost | grep 'received' | awk
+-F',' '{ print $2 }' | awk '{ print $1 }')
+  if [ $count -eq 1 ]; then
+    # 100% Sucess
+    if [ $HERE -eq 0 ]; then
+       curl $phone_here
+       echo "Host : $myHost is here (ping completed) at $(date)" >> '/home/pi/Desktop/monitor/phone_status.dat'
+       HERE=1
+    fi
+    i=0
+  fi
+  sleep 3
+  let i=i+1
+done
+
+if [ $HERE -eq 1 ]; then
+   curl $phone_away
+   echo "Host : $myHost is away (ping failed) at $(date)" >> '/home/pi/Desktop/monitor/phone_status.dat'
+   HERE=0
+fi
+
+done
