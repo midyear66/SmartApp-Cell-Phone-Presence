@@ -21,7 +21,7 @@ while true; do
 
 # no ping request
 COUNT=1
-WAIT=1
+WAIT=2
 i=0
 
 echo "Start time: $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
