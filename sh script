@@ -19,7 +19,6 @@ fi
 
 while true; do
 
-# no ping request
 COUNT=1
 WAIT=2
 i=0
@@ -28,7 +27,7 @@ echo "Start time: $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
 while [ $i -lt 300 ]; do
   count=$(ping -c $COUNT -w $WAIT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   if [ $count -eq 1 ]; then
-    # 100% Sucess
+    # Phone Detected
     if [ $HERE -eq 0 ]; then
        curl $phone_here
        echo "Host : $myHost is here (ping completed) at $(date)" >> '/home/pi/Desktop/monitor/phone_status.dat'
