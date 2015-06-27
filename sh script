@@ -17,13 +17,14 @@ else
   echo "Created at $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
 fi
 
+echo "Start time: $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
+
 while true; do
 
 COUNT=1
 WAIT=2
 i=0
 
-echo "Start time: $(date)" >> /home/pi/Desktop/monitor/phone_status.dat
 while [ $i -lt 300 ]; do
   count=$(ping -c $COUNT -w $WAIT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   if [ $count -eq 1 ]; then
